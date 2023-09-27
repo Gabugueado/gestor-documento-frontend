@@ -1,18 +1,11 @@
-<template>
-      <LogIn/>
-      <button to:> </button>
-</template>
-  
-<script>
+
+<script setup>
 // @ is an alias to /src
-import LogIn from '@/components/LogIn.vue'
+import auth from '@/modules/auth/views/LogIn.vue'
+
+</script>
   
-  
-  export default {
-    name: 'LoginView',
-    components: {
-    LogIn
-}
-  }
-  </script>
-  
+
+<template>
+    <auth />
+</template>

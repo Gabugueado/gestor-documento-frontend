@@ -1,21 +1,19 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
+
+import isAuthenticatedGuard from '../modules/auth/router/auth-guard'
+
+import authRouter from '../modules/auth/router/index.js'
+import docRouter from '../modules/gestor/router/index.js'
 
 const routes = [
   {
     path: '/',
-    name: 'loginView',
-    component: LoginView
+    ...authRouter,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-    }
+    path: '/docs',
+    beforeEnter: [ isAuthenticatedGuard ],
+    ...docRouter
   }
 ]
 
