@@ -79,6 +79,6 @@ export const loadFiles = async ({commit}, id) => {
       Authorization: `Bearer ${access}`,
     },
   })
-  commit('loadFiles', data)
+  commit('loadFiles')
   return data
 }

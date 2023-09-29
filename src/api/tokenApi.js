@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 
-const authApi = axios.create({
-    baseURL: 'http://localhost:8000/token',
+const tokenApi = axios.create({
+    baseURL: 'http://localhost:8000/token'
 })
 
-export default authApi
+export default tokenApi
 
 

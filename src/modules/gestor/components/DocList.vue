@@ -4,7 +4,7 @@
           <input 
             type="text"
             class="form-control"
-            placeholder="Buscar entrada"
+            placeholder="Buscar documento"
             v-model="term"
           />
       </div>
@@ -13,7 +13,7 @@
         <button class="btn btn-primary mx-3"
           @click="$router.push({ name: 'doc', params: { id: 'new' } })">
           <i class="fa fa-plus-circle"></i>
-          Nueva entrada
+          Nuevo Documento
         </button>
       </div>
 

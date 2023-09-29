@@ -1,4 +1,4 @@
-import authApi from "@/api/tokenApi";
+import tokenApi from "@/api/tokenApi";
 import loginApi from "@/api/loginApi";
 
 // export const myAction = async ({ commit }) => {
@@ -18,7 +18,7 @@ export const signIn = async ({ commit }, user) => {
     const { username, password } = user
 
     try {
-        const { data } = await authApi.post('/new/', { username, password })
+        const { data } = await tokenApi.post('/new/', { username, password })
         const { access, refresh } = data
         commit('login', { username, access, refresh })
         return { ok: true, title: 'ingreso con éxito' }

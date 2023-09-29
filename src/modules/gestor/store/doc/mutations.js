@@ -29,13 +29,13 @@ export const deleteDoc = ( state, doc ) => {
     state.docs = state.docs.filter( doc => doc.id !== id )
 }
 
-export const clearEntries = ( state ) => {
-    state.entries = []
+export const clearDocs = ( state ) => {
+    state.docs = []
 }
 
-export const loadFiles = ( state, docFile ) => {
+export const loadFiles = ( state, ) => {
 
-    state.file = docFile
+    
     state.isLoading = false
     
 }

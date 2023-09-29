@@ -24,7 +24,7 @@ const useAuth = () => {
     
     const logout = () => {
         store.commit('auth/logout')
-        store.commit('gestor/clearEntries')
+        store.commit('gestor/clearDocs')
     }
     
     return {

@@ -52,7 +52,7 @@
 
             <div class="app-content">
                 <vue-pdf-embed 
-                    v-show="doc.base64_content"
+                    v-if="doc.base64_content"
                     ref="pdfRef" 
                     :source="doc.base64_content" 
                     :page="page"
@@ -144,7 +144,6 @@ export default {
                 
                 if (!this.doc.id) return this.$router.push({ name: 'no-doc' })
             }
-            console.log(this.doc.base64_content);
 
             // this.doc = doc
         },

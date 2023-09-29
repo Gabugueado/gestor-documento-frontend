@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 
-const authApi = axios.create({
+const loginApi = axios.create({
     baseURL: 'http://localhost:8000/login',
 })
 
-export default authApi
+export default loginApi
 
 
