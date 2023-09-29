@@ -147,7 +147,6 @@ export default {
 
             // this.doc = doc
         },
-
         async saveDoc() {
 
             Swal.fire({
@@ -161,12 +160,26 @@ export default {
             this.doc.file = this.$refs.imageSelector.files[0]
             if (this.doc.id) {
                 // Actualizar
+                if ( !this.doc.file ){
+                    return Swal.fire({
+                        title: 'no hay nada que actualizar',
+                        allowOutsideClick: false
+                    })
+                    
+                }
                 await this.updateDoc(this.doc)
-
             } else {
                 // Crear una nueva entrada
                 const id = await this.addDoc(this.doc)
-                this.$router.push({ name: 'doc', params: { id: id } })
+                
+                if ( typeof id == 'string'  ){
+                    this.$router.push({ name: 'doc', params: { id: id } })    
+                }
+                return Swal.fire({
+                        title: 'no hay nada que guardar',
+                        allowOutsideClick: false
+                    })
+                
             }
 
             Swal.fire('Guardado', 'Documento registrado con éxito', 'success')

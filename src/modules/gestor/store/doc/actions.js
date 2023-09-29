@@ -9,14 +9,18 @@ export const loadDocs = async ({ commit }) => {
 
   const access = localStorage.getItem('access')
 
-
-  const { data } = await docApi.get('/list/', {
-    headers: {
-      Authorization: `Bearer ${access}`,
-    },
-  })
-
-  commit('setDocs', data)
+  try {
+    const { data } = await docApi.get('/list/', {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    })  
+    commit('setDocs', data)
+  } catch (error) {
+    
+    commit('setDocs', [] )
+  }
+  
 }
 
 
@@ -25,18 +29,25 @@ export const addDoc = async ( { commit }, doc ) => {
   const access = localStorage.getItem('access')
   
   const { content, title, file } = doc
+  try {
+    
+    const { data } = await docApi.post('/create/', {content, title, file},  {
+      headers: {
+        Authorization: `Bearer ${access}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    })  
+    commit('addDoc', data)
+    return data.id
+
+  } catch (error) {
+    
+    return error.response.data
+  }
   
-  const { data } = await docApi.post('/create/', {content, title, file},  {
-    headers: {
-      Authorization: `Bearer ${access}`,
-      'Content-Type': 'multipart/form-data'
-    }
-  })
+  
 
-
-  commit('addDoc')
-
-  return data.id
+  
 
 }
 

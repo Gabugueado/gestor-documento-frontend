@@ -23,9 +23,15 @@ export const signIn = async ({ commit }, user) => {
         commit('login', { username, access, refresh })
         return { ok: true, title: 'ingreso con éxito' }
     } catch (error) {
-       
-        
-        const {detail}  = error.response.data
+       console.log(error.response.data);
+        if (typeof error.response.data == 'object'){
+            
+            if (error.response.data.password && error.response.data.username ) return { ok: false, title: 'complete los campos' }
+            if (error.response.data.username) return { ok: false, title: 'ingrese un username' }
+            if (error.response.data.password) return { ok: false, title: 'ingrese una contraseña' }
+             
+        }
+        const { detail }  = error.response.data
         return { ok: false, title: detail }
     }
 }
