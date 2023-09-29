@@ -15,7 +15,7 @@
     <div v-else 
         class="d-flex">
         <div class="col-4">
-            <EntryList />
+            <DocList />
         </div>
         <div class="col">
             <router-view />
@@ -32,7 +32,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
     components: {
         NavBar: defineAsyncComponent(() => import('../components/NavBar.vue')),
-        EntryList: defineAsyncComponent(() => import('../components/EntryList.vue')),
+        DocList: defineAsyncComponent(() => import('../components/DocList.vue')),
     },
     methods: {
         ...mapActions('gestor', ['loadDocs'])

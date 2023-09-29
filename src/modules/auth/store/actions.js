@@ -23,10 +23,10 @@ export const signIn = async ({ commit }, user) => {
         commit('login', { username, access, refresh })
         return { ok: true, title: 'ingreso con éxito' }
     } catch (error) {
-        console.log(error);
+       
         
-        // const {detail}  = error.response.data
-        return { ok: false, title: error }
+        const {detail}  = error.response.data
+        return { ok: false, title: detail }
     }
 }
 

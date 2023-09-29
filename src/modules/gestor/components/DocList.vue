@@ -1,5 +1,5 @@
 <template>
-  <div class="entry-list-container h-100">
+  <div class="doc-list-container h-100">
       <div class="px-2 pt-2">
           <input 
             type="text"
@@ -18,8 +18,8 @@
       </div>
 
 
-      <div class="entry-scrollarea">
-          <Entry
+      <div class="doc-scrollarea">
+          <Doc
             v-for="doc in docsByTerm"
             :key="doc.id"
             :doc="doc"
@@ -34,7 +34,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    Entry: defineAsyncComponent(() => import('./EntryComponent.vue'))
+    Doc: defineAsyncComponent(() => import('./DocComponent.vue'))
   },
   computed: {
     ...mapGetters('gestor', ['getDocsByTerm']),
@@ -56,13 +56,13 @@ export default {
 
 
 <style lang="scss" scoped>
-.entry-list-container{
+.doc-list-container{
     border-right: 1px solid #2c3e50;
     // height: calc( 100vh - 56px );
     // height: 100%;
 }
 
-.entry-scrollarea{
+.doc-scrollarea{
     height: calc( 100vh - 110px );
     overflow: scroll;
     // height: 100%;

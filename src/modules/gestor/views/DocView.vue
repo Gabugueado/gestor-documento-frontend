@@ -26,7 +26,10 @@
         <hr>
         <div class="d-flex flex-column h-100">
             <div class="app-header">
-                <template >
+                <template v-if="isLoading">
+                    Cargando...
+                </template>
+                <template v-else>
                     <span v-if="showAllPages">
                         {{ pageCount }} page(s)
                     </span>
@@ -42,36 +45,35 @@
                     <label class="right">
                         <input v-model="showAllPages" type="checkbox">
 
-                        Show all pages
+                        Mostrar todas las páginas
                     </label>
                 </template>
             </div>
 
             <div class="app-content">
                 <vue-pdf-embed 
+                    v-show="doc.base64_content"
                     ref="pdfRef" 
                     :source="doc.base64_content" 
-                    :page="page" 
+                    :page="page"
                     @password-requested="handlePasswordRequest"
                     @rendered="handleDocumentRender"
                 />
             </div>
-            <!-- <vue-pdf-embed :source="doc.base64_content" /> -->
         </div>
 
     </template>
 
-    <Fab icon="fa-save" @on:click="saveEntry" />
+    <Fab icon="fa-save" @on:click="saveDoc" />
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
 import { mapGetters, mapActions } from 'vuex' // computed!!!
 import Swal from 'sweetalert2'
 import VuePdfEmbed from 'vue-pdf-embed'
 
 import getDayMonthYear from '../helpers/getDayMonthYear'
-
 
 
 export default {
@@ -83,17 +85,22 @@ export default {
         }
     },
     components: {
-        Fab: defineAsyncComponent(() => import('../components/FabComponent.vue')),
+        Fab: defineAsyncComponent(() => import('../components/FabComponent.vue')), //lazy load
         VuePdfEmbed,
     },
     data() {
         return {
-            doc: null,
-            file: null,
+            doc: ref({
+                title: '',
+                content: '',
+                file: null,
+                base64_content: null,
+                created_at: new Date().getTime()
+            }),
             isLoading: true,
             page: null,
             pageCount: 1,
-            showAllPages: true
+            showAllPages: true,
         }
     },
 
@@ -115,28 +122,34 @@ export default {
 
     methods: {
         ...mapActions('gestor', ['loadFiles', 'updateDoc', 'addDoc', 'deleteDoc']),
-        async loadEntry() {
-            let doc;
-
+        // carga vista del documento
+        async loadDoc() {
             if (this.id === 'new') {
-                doc = {
+                this.doc = {
                     title: '',
                     content: '',
                     file: null,
+                    base64_content: null,
                     created_at: new Date().getTime()
                 }
-
             } else {
-                doc = this.getDocById(this.id)
+                this.doc = this.getDocById(this.id)
                 const { base64_content } = await this.loadFiles(this.id)
-                doc.base64_content = `data:application/pdf;base64,${base64_content}`
-                // doc.file = `data:application/pdf;base64, ${docFile.base64_content}`
+                this.doc.base64_content = `data:application/pdf;base64,${base64_content}`
+                
+                
+                if (this.doc.file.includes(".docx")) console.log('type docx')
 
-                if (!doc) return this.$router.push({ name: 'no-doc' })
+                if (this.doc.file.includes(".txt")) console.log('type txt')
+                
+                if (!this.doc.id) return this.$router.push({ name: 'no-doc' })
             }
-            this.doc = doc
+            console.log(this.doc.base64_content);
+
+            // this.doc = doc
         },
-        async saveEntry() {
+
+        async saveDoc() {
 
             Swal.fire({
                 title: 'Espere por favor',
@@ -157,8 +170,6 @@ export default {
                 this.$router.push({ name: 'doc', params: { id: id } })
             }
 
-
-            this.file = null
             Swal.fire('Guardado', 'Documento registrado con éxito', 'success')
 
 
@@ -188,16 +199,14 @@ export default {
         },
         onSelectedPDF(event) {
             const file = event.target.files[0]
-            console.log(file)
             if (!file) {
-                this.pdfFile = null
+                this.doc.file = null
                 return
             }
             this.doc.file = file
             const fr = new FileReader()
             fr.onload = () => this.doc.base64_content = fr.result
             fr.readAsDataURL(file)
-
         },
         onSelectPDF() {
             this.$refs.imageSelector.click()
@@ -207,48 +216,47 @@ export default {
             this.pageCount = this.$refs.pdfRef.pageCount
         },
         async handlePasswordRequest(callback, retry) {
-            
+
             // retry está inicializado en false
-            if (!retry){
+            if (!retry) {
                 const { value: password } = await Swal.fire({
-                title: 'ingrese la contraseña',
-                input: 'password',
-                inputLabel: 'Contraseña',
-                inputPlaceholder: 'Contraseña',
-                inputAttributes: {
-                    maxlength: 10,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                }
+                    title: 'ingrese la contraseña',
+                    input: 'password',
+                    inputLabel: 'Contraseña',
+                    inputPlaceholder: 'Contraseña',
+                    inputAttributes: {
+                        maxlength: 10,
+                        autocapitalize: 'off',
+                        autocorrect: 'off'
+                    }
                 })
                 callback(password)
-            }else {
+            } else {
                 const { value: password } = await Swal.fire({
-                title: 'Reingrese la contraseña',
-                input: 'password',
-                inputLabel: 'Contraseña Incorrecta',
-                inputPlaceholder: 'Contraseña',
-                inputAttributes: {
-                    maxlength: 10,
-                    autocapitalize: 'off',
-                    autocorrect: 'off'
-                }
+                    title: 'Reingrese la contraseña',
+                    input: 'password',
+                    inputLabel: 'Contraseña Incorrecta',
+                    inputPlaceholder: 'Contraseña',
+                    inputAttributes: {
+                        maxlength: 10,
+                        autocapitalize: 'off',
+                        autocorrect: 'off'
+                    }
                 })
                 callback(password)
             }
+
             
-            // console.log(callback(password));
-            
-            
+
+
         },
     },
     created() {
-        // console.log(this.$route.params.id)
-        this.loadEntry()
+        this.loadDoc()
     },
     watch: {
         id() {
-            this.loadEntry()
+            this.loadDoc()
         },
         showAllPages() {
             this.page = this.showAllPages ? null : 1
@@ -261,22 +269,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.vue-pdf-embed > div {
-  margin-bottom: 8px;
-  box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
+.vue-pdf-embed>div {
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
 }
 
 .app-header {
-  padding: 16px;
-  box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
-  background-color: #555;
-  color: #ddd;
+    padding: 16px;
+    box-shadow: 0 2px 8px 4px rgba(0, 0, 0, 0.1);
+    background-color: #555;
+    color: #ddd;
 }
-.app-content{
+
+.app-content {
     background-color: #ccc;
 }
 
 
+input[type="file"] {
+    display: none;
+}
 
+.custom-file-upload {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background: #4A8FED;
+    padding: 10px;
+    color: #fff;
+    font: inherit;
+    font-size: 16px;
+    font-weight: bold;
+}
 </style>

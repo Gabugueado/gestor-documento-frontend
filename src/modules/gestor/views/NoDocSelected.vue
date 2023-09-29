@@ -4,7 +4,7 @@
     </div>
 
     <Fab 
-        @on:click="createNewEntry"
+        @on:click="createNewDoc"
     />
 </template>
 
@@ -13,13 +13,13 @@
 import { defineAsyncComponent } from 'vue'
 
 export default {
-    name: 'NoEntrySelected',
+    name: 'NoDocSelected',
     components: {
         Fab: defineAsyncComponent( () => import('../components/FabComponent.vue') )
     },
     methods: {
-        createNewEntry() {
-            this.$router.push({ name: 'entry', params: { id: 'new' } })
+        createNewDoc() {
+            this.$router.push({ name: 'doc', params: { id: 'new' } })
         }
     }
 }
