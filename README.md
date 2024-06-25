@@ -1,5 +1,3 @@
-Claro, aquí tienes un ejemplo de README para tu aplicación Vue 3:
-
 # Aplicación Vue 3
 
 Este es el repositorio de la aplicación Vue 3 para el proyecto de [nombre del proyecto]. Esta aplicación utiliza Vue 3 para crear una interfaz de usuario interactiva y atractiva.
